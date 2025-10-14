@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "TBitField.h"
-#include "TSet.h"
+#include "TBitField.cpp"
+#include "TSet.cpp"
 //Проверка на исключения
 TEST(TestExcept1, TestName_Init) {//Проверка инициализации
 	EXPECT_ANY_THROW({
@@ -220,7 +220,7 @@ TEST(Test_Add2, TestNameWrong) {//Отрицание, неправильный результат
 }
 
 //Проверка приравнивания
-TEST(Test_Eq, TestNameEquating) {
+TEST(Test_Eq, TestNameEquating1) {
 	int n = 8;
 	string s = "11110001";
 	TBitField T(n), B(n);
@@ -228,6 +228,17 @@ TEST(Test_Eq, TestNameEquating) {
 	stream >> T;
 	B = T;
 	EXPECT_EQ(B, T);
+}
+
+TEST(Test_Eq2, TestNameEquating2) {//Самоприсваивание проходит корректно
+	int n = 8;
+	string s = "11110001";
+	TBitField T(n), T_former(n);
+	istringstream stream(s);
+	stream >> T;
+	T_former = T;
+	T = T;
+	EXPECT_EQ(T_former, T);
 }
 
 //Проверка равенства
@@ -288,6 +299,17 @@ TEST(Test_Set5, TestExceptionIsMember) {
 	EXPECT_ANY_THROW({
 		S.IsMember(2 * n);
 		});
+}
+
+TEST(Test_Set6, TestCopy) {
+	int n = 8;
+	string s = "11110000";
+	TBitField T(n);
+	istringstream stream(s);
+	stream >> T;
+	TSet S(T);
+	TSet M(S);
+	EXPECT_EQ(S, M);
 }
 
 //Проверка на сравнения
