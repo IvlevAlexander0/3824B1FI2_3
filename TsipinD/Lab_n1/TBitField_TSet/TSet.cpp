@@ -1,9 +1,9 @@
-#pragma once
-#include "tset.h"
+
+#include "../../../include/Lab1/tset.h"
 #include <stdexcept>
 
-TSet::TSet(int mp): MaxPower(mp), BitField(mp) {
-	if (mp < 0) throw std::invalid_argument("Negative MaxPower");
+TSet::TSet(int mp) : MaxPower(mp), BitField(mp) {
+    if (mp < 0) throw std::invalid_argument("Negative MaxPower");
 }
 
 TSet::TSet(const TSet& s) : MaxPower(s.MaxPower), BitField(s.BitField) {}
@@ -11,11 +11,11 @@ TSet::TSet(const TSet& s) : MaxPower(s.MaxPower), BitField(s.BitField) {}
 TSet::TSet(const TBitField& bf) : MaxPower(bf.GetLength()), BitField(bf) {}
 
 TSet::operator TBitField() {
-	return BitField;
+    return BitField;
 }
 
 int TSet::GetMaxPower(void) const {
-	return MaxPower;
+    return MaxPower;
 }
 
 void TSet::InsElem(int Elem) {

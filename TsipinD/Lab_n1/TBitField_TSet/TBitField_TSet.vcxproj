@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{d7ec3f75-b523-4f1b-8aac-44d6c761a461}</ProjectGuid>
-    <RootNamespace>Lab1</RootNamespace>
+    <ProjectGuid>{db8187b0-db6f-43fb-97df-7ece34e03ea1}</ProjectGuid>
+    <RootNamespace>TBitFieldTSet</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -127,8 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="tbitfield.cpp" />
-    <ClCompile Include="tset.cpp" />
+    <ClCompile Include="TBitField.cpp" />
+    <ClCompile Include="TBitField_TSet.cpp" />
+    <ClCompile Include="TSet.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\Lab1\tbitfield.h" />
+    <ClInclude Include="..\..\..\include\Lab1\tset.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

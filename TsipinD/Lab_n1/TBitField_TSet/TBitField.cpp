@@ -1,7 +1,5 @@
-#pragma once
-#include "tbitfield.h"
+#include "../../../include/Lab1/tbitfield.h"
 #include <stdexcept>
-#include <algorithm>
 
 static int BitsPerElem = sizeof(TELEM) * 8;
 
@@ -80,7 +78,7 @@ TBitField  TBitField::operator|(const TBitField& bf) {
     for (int i = 0; i < result.MemLen; ++i) {
         TELEM lValue;
         if (i < MemLen) {
-            lValue = pMem[i];  
+            lValue = pMem[i];
         }
         else {
             lValue = 0;         // вышел за границу берЄм 0
@@ -91,7 +89,7 @@ TBitField  TBitField::operator|(const TBitField& bf) {
             rValue = bf.pMem[i];
         }
         else {
-            rValue = 0;  
+            rValue = 0;
         }
 
         result.pMem[i] = lValue | rValue;
@@ -128,7 +126,7 @@ TBitField TBitField::operator~() {
     TBitField result(*this);
     for (int i = 0; i < MemLen; ++i)
         result.pMem[i] = ~result.pMem[i];
-    
+
     int extra = MemLen * BitsPerElem - BitLen; // в последнем элементе BitLen % BitsPerElem
     if (extra) {                               // может оказатьс€ < BitsPerElem, в конце образовываютс€ лишние единицы
         TELEM mask = (~TELEM(0)) >> extra;
