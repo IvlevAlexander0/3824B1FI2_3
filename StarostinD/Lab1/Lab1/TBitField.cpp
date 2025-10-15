@@ -95,6 +95,9 @@ int TBitField::operator!=(const TBitField& bf) const {
 }
 
 TBitField& TBitField::operator=(const TBitField& bf) {
+	if (this == &bf) {
+		return *this;
+	}
 	delete[] pMem;
 	BitLen = bf.BitLen;
 	MemLen = bf.MemLen;
@@ -106,22 +109,20 @@ TBitField& TBitField::operator=(const TBitField& bf) {
 }
 
 TBitField TBitField::operator|(const TBitField& bf) {
-	if (BitLen != bf.BitLen) {
-		throw std::invalid_argument("Error! Different sizes");
-	}
-	TBitField Or(BitLen);
-	for (int i = 0; i < MemLen; ++i) {
+	TBitField Or(BitLen > bf.BitLen ? *this : bf);
+	int minLen;
+	MemLen > bf.MemLen ? minLen = bf.MemLen : minLen = MemLen;
+	for (int i = 0; i < minLen; ++i) {
 		Or.pMem[i] = pMem[i] | bf.pMem[i];
 	}
 	return Or;
 }
 
 TBitField TBitField::operator&(const TBitField& bf) {
-	if (BitLen != bf.BitLen) {
-		throw std::invalid_argument("Error! Different sizes");
-	}
-	TBitField And(BitLen);
-	for (int i = 0; i < MemLen; ++i) {
+	TBitField And(BitLen > bf.BitLen ? BitLen : bf.BitLen);
+	int minLen;
+	MemLen > bf.MemLen ? minLen = bf.MemLen : minLen = MemLen;
+	for (int i = 0; i < minLen; ++i) {
 		And.pMem[i] = pMem[i] & bf.pMem[i];
 	}
 	return And;

@@ -30,6 +30,9 @@ int TSet::operator!= (const TSet& s) const {
 	return BitField != s.BitField;
 }
 TSet& TSet::operator=(const TSet& s) {
+	if (this == &s) {
+		return *this;
+	}
 	MaxPower = s.MaxPower;
 	BitField = s.BitField;
 	return *this;

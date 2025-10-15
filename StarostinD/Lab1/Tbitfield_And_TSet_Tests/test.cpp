@@ -35,7 +35,11 @@ TEST(TBitfield_Constructor, len_constructor) {
 TEST(TBitfield_Constructor, copy_constructor) {
 	uniform_int_distribution<> un(1, 1024);
 	default_random_engine re;
-	EXPECT_NO_THROW(TBitField test(get_random_bitfield(un(re))));
+	TBitField tst = get_random_bitfield(un(re));
+	EXPECT_NO_THROW(TBitField copy(tst));
+	TBitField copy(tst);
+	tst.GetBit(0) == 0 ? copy.SetBit(0) : copy.ClrBit(0);
+	EXPECT_NE(tst, copy);
 }
 
 TEST(Bits_Access, GetLength) {
@@ -108,7 +112,14 @@ TEST(Bitwise_operations, Assignment) {
 	EXPECT_EQ(test, zero = test);
 }
 
-TEST(Bitwise_operations, Or) {
+TEST(Bitwise_operations, Self_Assignment) {
+	int BitLen = 20;
+	TBitField test(get_random_bitfield(BitLen));
+	TBitField test_before(test);
+	EXPECT_EQ(test_before, test = test);
+}
+
+TEST(Bitwise_operations, Or_Equal_Sizes) {
 	int BitLen = 65;
 	TBitField test1(get_random_bitfield(BitLen));
 	TBitField test2(get_random_bitfield(BitLen));
@@ -121,7 +132,7 @@ TEST(Bitwise_operations, Or) {
 	EXPECT_EQ(test_or, test1 | test2);
 }
 
-TEST(Bitwise_operations, And) {
+TEST(Bitwise_operations, And_Equal_Sizes) {
 	int BitLen = 65;
 	TBitField test1(get_random_bitfield(BitLen));
 	TBitField test2(get_random_bitfield(BitLen));
@@ -132,6 +143,32 @@ TEST(Bitwise_operations, And) {
 		}
 	}
 	EXPECT_EQ(test_and, test1 | test2);
+}
+
+TEST(Bitwise_operations, Or_Different_sizes) {
+	int BitLen = 15;
+	TBitField test1(get_random_bitfield(BitLen));
+	TBitField test2(get_random_bitfield(BitLen + 1));
+	TBitField test_or(test2);
+	for (int i = 0; i < BitLen; ++i) {
+		if (test1.GetBit(i) || test2.GetBit(i)) {
+			test_or.SetBit(i);
+		}
+	}
+	EXPECT_EQ(test_or, test1 | test2);
+}
+
+TEST(Bitwise_operations, And_Different_sizes) {
+	int BitLen = 15;
+	TBitField test1(get_random_bitfield(BitLen));
+	TBitField test2(get_random_bitfield(BitLen + 1));
+	TBitField test_and(BitLen + 1);
+	for (int i = 0; i < BitLen; ++i) {
+		if (test1.GetBit(i) && test2.GetBit(i)) {
+			test_and.SetBit(i);
+		}
+	}
+	EXPECT_EQ(test_and, test1 & test2);
 }
 
 TEST(Bitwise_operations, Negation) {
@@ -216,14 +253,6 @@ TEST(TBitfield_Exceptions, Bits_Access_Invalid_Argument) {
 	EXPECT_THROW(test.SetBit(-1), std::invalid_argument);
 }
 
-TEST(TBitfield_Exceptions, Bitwise_operations_Invalid_Argument) {
-	int BitLen = 17;
-	TBitField test1(get_random_bitfield(BitLen));
-	TBitField test2(get_random_bitfield(BitLen + 1));
-	EXPECT_THROW(test1 | test2, std::invalid_argument);
-	EXPECT_THROW(test1 & test2, std::invalid_argument);
-}
-
 TEST(TBitfield_Exceptions, Input_length_error) {
 	int BitLen = 17;
 	string bit_string(BitLen + 1, '1');
@@ -266,7 +295,11 @@ TEST(TSet_Constructor, mp_constructor) {
 TEST(TSet_Constructor, copy_constructor) {
 	uniform_int_distribution<> un(1, 512);
 	default_random_engine re;
-	EXPECT_NO_THROW(TBitField(get_random_set(un(re))));
+	TSet tst(get_random_set(un(re)));
+	EXPECT_NO_THROW(TSet copy(tst));
+	TSet copy(tst);
+	tst.IsMember(0) ? copy.DelElem(0) : copy.InsElem(0);
+	EXPECT_NE(tst.IsMember(0), copy.IsMember(0));
 }
 
 TEST(TSet_Constructor, converting_constructor) {
@@ -346,6 +379,13 @@ TEST(SetTheoretic_Operations, Assignment) {
 	MaxPower = 1;
 	TSet zero(MaxPower);
 	EXPECT_EQ(test, zero = test);
+}
+
+TEST(SetTheoretic_Operations, Self_Assignment) {
+	int MaxPower = 20;
+	TSet test(get_random_set(MaxPower));
+	TSet test_before(test);
+	EXPECT_EQ(test_before, test = test);
 }
 
 TEST(SetTheoretic_Operations, Union_With_Element) {
