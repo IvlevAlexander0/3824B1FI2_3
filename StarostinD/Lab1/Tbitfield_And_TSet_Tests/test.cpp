@@ -38,6 +38,11 @@ TEST(TBitfield_Constructor, copy_constructor) {
 	TBitField tst = get_random_bitfield(un(re));
 	EXPECT_NO_THROW(TBitField copy(tst));
 	TBitField copy(tst);
+	EXPECT_EQ(tst.GetLength(), copy.GetLength());
+	int length = tst.GetLength();
+	for (int i = 0; i < length; ++i) {
+		EXPECT_EQ(tst.GetBit(i), copy.GetBit(i));
+	}
 	tst.GetBit(0) == 0 ? copy.SetBit(0) : copy.ClrBit(0);
 	EXPECT_NE(tst, copy);
 }
@@ -88,8 +93,8 @@ TEST(Bitwise_operations, Equal) {
 	EXPECT_TRUE(test == test); // Проверка равенства идентичных объектов
 	BitLen = 10;
 	TBitField zero_1(BitLen);
-	TBitField zero_2(BitLen);
-	EXPECT_TRUE(zero_1 == zero_2); // Проверка равенства разных объектов, содержащих одинаковые элементы
+	TBitField zero_2(BitLen + 1);
+	EXPECT_TRUE(zero_1 == zero_2); // Проверка равенства разных объектов, разного размера, содержащих одинаковые элементы
 	EXPECT_FALSE(test == zero_1); // Проверка отсутствия равенства разных объектов с разными элементами
 }
 
@@ -358,7 +363,9 @@ TEST(SetTheoretic_Operations, Equal) {
 	MaxPower = 10;
 	TSet zero_1(MaxPower);
 	TSet zero_2(MaxPower);
+	TSet zero_3(MaxPower + 1);
 	EXPECT_TRUE(zero_1 == zero_2);
+	EXPECT_FALSE(zero_1 == zero_3);
 	EXPECT_FALSE(test == zero_1);
 }
 
@@ -369,7 +376,9 @@ TEST(SetTheoretic_Operations, Not_Equal) {
 	MaxPower = 10;
 	TSet zero_1(MaxPower);
 	TSet zero_2(MaxPower);
+	TSet zero_3(MaxPower + 1);
 	EXPECT_FALSE(zero_1 != zero_2);
+	EXPECT_TRUE(zero_1 != zero_3);
 	EXPECT_TRUE(test != zero_1);
 }
 
@@ -397,6 +406,8 @@ TEST(SetTheoretic_Operations, Union_With_Element) {
 	TSet test2 = test1;
 	test2.InsElem(random_elem);
 	EXPECT_EQ(test2, test1 + random_elem);
+	test1 = test1 + random_elem;
+	EXPECT_EQ(test2, test1 + random_elem);
 }
 
 TEST(SetTheoretic_Operations, Difference_With_Element) {
@@ -409,6 +420,8 @@ TEST(SetTheoretic_Operations, Difference_With_Element) {
 	TSet test2 = test1;
 	test2.DelElem(random_elem);
 	EXPECT_EQ(test2, test1 - random_elem);
+	test1 = test1 - random_elem;
+	EXPECT_EQ(test1, test1 - random_elem);
 }
 
 TEST(SetTheoretic_Operations, Union_With_Set) {

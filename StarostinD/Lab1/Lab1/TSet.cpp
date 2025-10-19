@@ -24,10 +24,13 @@ int TSet::IsMember(const int Elem) const {
 }
 
 int TSet::operator== (const TSet& s) const {
+	if (MaxPower != s.MaxPower) {
+		return 0;
+	}
 	return BitField == s.BitField;
 }
 int TSet::operator!= (const TSet& s) const {
-	return BitField != s.BitField;
+	return !(*this == s);
 }
 TSet& TSet::operator=(const TSet& s) {
 	if (this == &s) {

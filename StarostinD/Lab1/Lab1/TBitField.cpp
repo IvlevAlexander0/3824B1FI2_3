@@ -48,6 +48,7 @@ TBitField::TBitField(const TBitField& bf) {
 
 TBitField::~TBitField() {
 	delete[] pMem;
+	pMem = nullptr;
 }
 
 int TBitField::GetLength() const {
@@ -82,9 +83,20 @@ int TBitField::operator==(const TBitField& bf) const {
 	if (MemLen != bf.MemLen) {
 		return 0;
 	}
-	for (int i = 0; i < MemLen; ++i) {
+	int minLen, maxLen;
+	const size_t size = sizeof(TELEM);
+	TELEM zeroTELEM{};
+	TELEM* mx;
+	MemLen > bf.MemLen ? (mx = pMem, maxLen = MemLen, minLen = bf.MemLen) : (mx = bf.pMem, maxLen = bf.MemLen, minLen = MemLen);
+	int i = 0;
+	for (; i < minLen; ++i) {
 		if (pMem[i] ^ bf.pMem[i]) {  //Проверка равенства нулю суммы по модулю 2 между двумя элементами 
 			return 0;				  //на одинаковых позициях в pMem
+		}
+	}
+	for (; i < maxLen; ++i) {
+		if (mx[i] ^ zeroTELEM) {
+			return 0;
 		}
 	}
 	return 1;
