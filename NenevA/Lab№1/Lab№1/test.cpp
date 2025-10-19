@@ -154,8 +154,52 @@ TEST(Test_And4, TestNameDifferentLengthsWrong) {//Строки разной длины, но неправ
 	EXPECT_FALSE((T & B) == R);
 }
 
+TEST(Test_And5, TestNameDifferentLengths2) {//Строки разной длины
+	int n = 5;
+	string s = "10010", s1 = "0110000", res = "0010000";
+	istringstream stream(s), stream1(s1), Res(res);
+	TBitField T(n), B(n + 2), R(n + 2);
+	stream >> T;
+	stream1 >> B;
+	Res >> R;
+	EXPECT_EQ(T & B, R);
+}
+
+TEST(Test_And6, TestNameDifferentLengths3) {//Строки разной длины
+	int n = 6;
+	string s = "100101", s1 = "1000011100", res = "0000000100";
+	istringstream stream(s), stream1(s1), Res(res);
+	TBitField T(n), B(n + 4), R(n + 4);
+	stream >> T;
+	stream1 >> B;
+	Res >> R;
+	EXPECT_EQ(T & B, R);
+}
+
+TEST(Test_And7, TestNameDifferentLengths4) {//Строки разной длины
+	int n = 7;
+	string s = "1101100101", s1 = "1011001", res = "0001000001";
+	istringstream stream(s), stream1(s1), Res(res);
+	TBitField T(n+3), B(n), R(n + 3);
+	stream >> T;
+	stream1 >> B;
+	Res >> R;
+	EXPECT_EQ(T & B, R);
+}
+
+TEST(Test_And8, TestNameDifferentLengths5) {//Строки разной длины
+	int n = 5;
+	string s = "1101011101", s1 = "11001", res = "0000011001";
+	istringstream stream(s), stream1(s1), Res(res);
+	TBitField T(n + 5), B(n), R(n + 5);
+	stream >> T;
+	stream1 >> B;
+	Res >> R;
+	EXPECT_EQ(T & B, R);
+}
+
 //Побитовое ИЛИ
-TEST(Test_Or1, TestNameSameLengths) {//Строки равной длины
+TEST(Test_Or1, TestNameSameLengthsOr) {//Строки равной длины
 	int n = 8;
 	string s = "11110000", s1 = "11001100", res = "11111100";
 	istringstream stream(s), stream1(s1), Res(res);
@@ -166,7 +210,7 @@ TEST(Test_Or1, TestNameSameLengths) {//Строки равной длины
 	EXPECT_EQ(T | B, R);
 }
 
-TEST(Test_Or2, TestNameDifferentLengths) {//Строки разной длины
+TEST(Test_Or2, TestNameDifferentLengthsOr) {//Строки разной длины
 	int n = 8;
 	string s = "11000011", s1 = "1100110000", res = "1111110011";
 	istringstream stream(s), stream1(s1), Res(res);
@@ -177,7 +221,7 @@ TEST(Test_Or2, TestNameDifferentLengths) {//Строки разной длины
 	EXPECT_EQ(T | B, R);
 }
 
-TEST(Test_Or3, TestNameSameLengthsWrong) {//СТроки равной длины, но неправильный результат
+TEST(Test_Or3, TestNameSameLengthsWrongOr) {//СТроки равной длины, но неправильный результат
 	int n = 8;
 	string s = "11110000", s1 = "11001100", res = "00111100";
 	istringstream stream(s), stream1(s1), Res(res);
@@ -188,7 +232,7 @@ TEST(Test_Or3, TestNameSameLengthsWrong) {//СТроки равной длины, но неправильный
 	EXPECT_FALSE((T | B) == R);
 }
 
-TEST(Test_Or4, TestNameDifferentLengthsWrong) {//Строки разной длины, но неправильный результат
+TEST(Test_Or4, TestNameDifferentLengthsWrongOr) {//Строки разной длины, но неправильный результат
 	int n = 8;
 	string s = "11000011", s1 = "1100110000", res = "0011110011";
 	istringstream stream(s), stream1(s1), Res(res);
@@ -197,6 +241,39 @@ TEST(Test_Or4, TestNameDifferentLengthsWrong) {//Строки разной длины, но неправи
 	stream1 >> B;
 	Res >> R;
 	EXPECT_FALSE((T | B) == R);
+}
+
+TEST(Test_Or5, TestNameDifferentLengthsOr2) {//Строки разной длины
+	int n = 6;
+	string s = "110001", s1 = "10011101", res = "10111101";
+	istringstream stream(s), stream1(s1), Res(res);
+	TBitField T(n), B(n + 2), R(n + 2);
+	stream >> T;
+	stream1 >> B;
+	Res >> R;
+	EXPECT_EQ(T | B, R);
+}
+
+TEST(Test_Or6, TestNameDifferentLengthsOr3) {//Строки разной длины
+	int n = 5;
+	string s = "1110010001", s1 = "11101", res = "1110011101";
+	istringstream stream(s), stream1(s1), Res(res);
+	TBitField T(n+5), B(n), R(n + 5);
+	stream >> T;
+	stream1 >> B;
+	Res >> R;
+	EXPECT_EQ(T | B, R);
+}
+
+TEST(Test_Or7, TestNameDifferentLengthsOr4) {//Строки разной длины
+	int n = 7;
+	string s = "1000011011", s1 = "1100000", res = "1001111011";
+	istringstream stream(s), stream1(s1), Res(res);
+	TBitField T(n + 3), B(n), R(n + 3);
+	stream >> T;
+	stream1 >> B;
+	Res >> R;
+	EXPECT_EQ(T | B, R);
 }
 
 TEST(Test_Add1, TestName1) {//Отрицание
@@ -245,6 +322,14 @@ TEST(Test_Eq2, TestNameEquating2) {//Самоприсваивание проходит корректно
 TEST(Test_Are_Equal, TestNameEquation) {
 	int n = 8;
 	string s = "11110000", s1 = "11110000";
+	TBitField T(n), B(n);
+	istringstream stream(s), stream1(s1);
+	EXPECT_EQ(T, B);
+}
+
+TEST(Test_Are_Equal2, TestNameEquation2) {
+	int n = 10;
+	string s = "1111001100", s1 = "1111001100";
 	TBitField T(n), B(n);
 	istringstream stream(s), stream1(s1);
 	EXPECT_EQ(T, B);
@@ -343,7 +428,7 @@ TEST(Test_Oper1, Test_Add) {
 	stream >> T;
 	stream1 >> B;
 	TSet S(T), S1(B);
-	S = S + 5;
+	S = S + 2;
 	EXPECT_EQ(S, S1);
 }
 
@@ -355,7 +440,7 @@ TEST(Test_Oper2, Test_Sub) {
 	stream >> T;
 	stream1 >> B;
 	TSet S(T), S1(B);
-	S = S - 5;
+	S = S - 2;
 	EXPECT_EQ(S, S1);
 }
 

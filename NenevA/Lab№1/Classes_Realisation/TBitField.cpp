@@ -1,4 +1,4 @@
-#include "tbitField.h"
+п»ї#include "tbitField.h"
 #include <algorithm>
 #include <exception>
 #include <cstring>
@@ -26,6 +26,7 @@ TBitField::TBitField(const TBitField& bf) {
 
 TBitField::~TBitField() {
 	delete[] pMem;
+	pMem = nullptr;
 }
 
 int TBitField::GetMemIndex(const int n) const {
@@ -101,22 +102,13 @@ TBitField& TBitField::operator=(const TBitField& bf) {
 	return *this;
 }
 
-TBitField TBitField::operator|(const TBitField& other) {
-	int maxLength = max(BitLen, other.BitLen);
-	TBitField result(maxLength);
-	int offset1 = 0;
-	int offset2 = 0;
-	if (BitLen < other.BitLen) {
-		offset1 = other.BitLen - BitLen;
-	}
-	else if (other.BitLen < BitLen) {
-		offset2 = BitLen - other.BitLen;
-	}
-	for (int i = 0; i < maxLength; ++i) {//Добавляем нули в начало строки, если строки разного размера
-		TELEM bit1 = (i >= offset1 && i - offset1 < BitLen) ? GetBit(i - offset1) : 0;
-		TELEM bit2 = (i >= offset2 && i - offset2 < other.BitLen) ? other.GetBit(i - offset2) : 0;
-		TELEM bit = bit1 | bit2;
-		if (bit) {
+TBitField TBitField::operator|(const TBitField& other){
+	size_t maxLen = std::max(BitLen, other.BitLen);
+	TBitField result(maxLen);
+	for (size_t i = 0; i < maxLen; ++i)	{
+		int bit1 = (i < BitLen) ? GetBit(i) : 0;
+		int bit2 = (i < other.BitLen) ? other.GetBit(i) : 0;
+		if (bit1 || bit2) {
 			result.SetBit(i);
 		}
 		else {
@@ -126,22 +118,13 @@ TBitField TBitField::operator|(const TBitField& other) {
 	return result;
 }
 
-TBitField TBitField::operator&(const TBitField& other) {
-	int maxLength = max(BitLen, other.BitLen);
-	TBitField result(maxLength);
-	int offset1 = 0;
-	int offset2 = 0;
-	if (BitLen < other.BitLen) {
-		offset1 = other.BitLen - BitLen;
-	}
-	else if (other.BitLen < BitLen) {
-		offset2 = BitLen - other.BitLen;
-	}
-	for (int i = 0; i < maxLength; ++i) { //Добавляем нули в начало строки, если строки разного размера
-		TELEM bit1 = (i >= offset1 && i - offset1 < BitLen) ? GetBit(i - offset1) : 0;
-		TELEM bit2 = (i >= offset2 && i - offset2 < other.BitLen) ? other.GetBit(i - offset2) : 0;
-		TELEM bit = bit1 & bit2;
-		if (bit) {
+TBitField TBitField::operator&(const TBitField& other){
+	size_t maxLen = std::max(BitLen, other.BitLen);
+	TBitField result(maxLen);
+	for (size_t i = 0; i < maxLen; ++i){
+		int bit1 = (i < BitLen) ? GetBit(i) : 0;
+		int bit2 = (i < other.BitLen) ? other.GetBit(i) : 0;
+		if (bit1 && bit2) {
 			result.SetBit(i);
 		}
 		else {
@@ -156,7 +139,7 @@ TBitField TBitField::operator~(void) {
 	for (int i = 0; i < MemLen; ++i) {
 		result.pMem[i] = ~pMem[i];
 	}
-	// Очищает лишние биты
+	// РћС‡РёС‰Р°РµС‚ Р»РёС€РЅРёРµ Р±РёС‚С‹
 	int lastBitIndex = BitLen % 32;
 	if (lastBitIndex != 0) {
 		result.pMem[MemLen - 1] &= (1 << lastBitIndex) - 1;
@@ -164,27 +147,29 @@ TBitField TBitField::operator~(void) {
 	return result;
 }
 
-istream& operator>>(istream& istr, TBitField& bf) {//Вводим некую последовательность цифр 1 и 0 длины BitLen
-	string str;
-	istr >> str;
+std::istream& operator>>(std::istream& is, TBitField& bf){
+	std::string str;
+
+	is >> str;
 	if (str.length() != bf.BitLen) {
 		throw invalid_argument("Input string length does not match BitField length");
 	}
-	for (int i = 0; i < bf.BitLen; ++i) {
-		if (str[i] == '1') {
+	for (size_t i = 0; i < bf.BitLen; ++i){
+		if (str[bf.BitLen - i - 1] == '1'){
 			bf.SetBit(i);
 		}
-		else if (str[i] == '0') {
+		else if (str[bf.BitLen - i - 1] == '0'){
 			bf.ClrBit(i);
 		}
-		else {
+		else{
 			throw invalid_argument("Input string must contain only '0' or '1'");
 		}
 	}
-	return istr;
+	return is;
 }
+
 ostream& operator<<(ostream& ostr, const TBitField& bf) {
-	for (int i = 0; i < bf.BitLen; ++i) {
+	for (int i = bf.BitLen - 1; i >= 0; --i) {
 		ostr << bf.GetBit(i);
 	}
 	return ostr;
