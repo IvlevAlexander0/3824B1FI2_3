@@ -37,6 +37,39 @@ TEST(BitField, LogicOperators) {
         if (i != 1) EXPECT_TRUE(neg.GetBit(i));
 }
 
+TEST(BitField, DifferentLength) {
+    TBitField a(5), b(10);
+    a.SetBit(1);
+    b.SetBit(7);
+    TBitField u = a | b;
+    EXPECT_TRUE(u.GetBit(1));
+    EXPECT_TRUE(u.GetBit(7));
+    EXPECT_EQ(u.GetLength(), 10);
+}
+
+TEST(BitField, EqualAndInequal) {
+    TBitField a(5), b(5);
+    a.SetBit(2);
+    b.SetBit(2);
+    EXPECT_TRUE(a == b);
+    b.SetBit(3);
+    EXPECT_TRUE(a != b);
+}
+
+TEST(BitField, RepeatedSet) {
+    TBitField bf(5);
+    bf.SetBit(2);
+    bf.SetBit(2); // повторная установка
+    EXPECT_EQ(bf.GetBit(2), 1);
+}
+
+TEST(BitField, EmptyInversion) {
+    TBitField bf(4);
+    TBitField neg = ~bf;
+    for (int i = 0; i < 4; i++)
+        EXPECT_TRUE(neg.GetBit(i));
+}
+
 //--------------------------  TSet  --------------------------
 
 TEST(Set, InsDelIsmemTest) {
@@ -64,4 +97,48 @@ TEST(Set, Complement) {
     EXPECT_FALSE(comp.IsMember(0));
     EXPECT_TRUE(comp.IsMember(1));
     EXPECT_TRUE(comp.IsMember(2));
+}
+
+TEST(Set, EqualAndInequal) {
+    TSet a(5), b(5);
+    a.InsElem(2);
+    b.InsElem(2);
+    EXPECT_TRUE(a == b);
+    b.InsElem(3);
+    EXPECT_TRUE(a != b);
+}
+
+TEST(Set, DifferentSizes) {
+    TSet a(5), b(8);
+    a.InsElem(1);
+    b.InsElem(6);
+    TSet u = a + b;
+    EXPECT_TRUE(u.IsMember(1));
+    EXPECT_TRUE(u.IsMember(6));
+    EXPECT_EQ(u.GetMaxPower(), 8);
+}
+
+TEST(Set, IntersectionDifferentSizes) {
+    TSet a(5), b(8);
+    a.InsElem(3);
+    b.InsElem(3);
+    TSet inter = a * b;
+    EXPECT_TRUE(inter.IsMember(3));
+}
+
+TEST(Set, ConversionToBitField) {
+    TSet s(5);
+    s.InsElem(2);
+    TBitField bf = s;
+    EXPECT_EQ(bf.GetBit(2), 1);
+}
+
+TEST(Set, SetInversion) {
+    TSet s(3);
+    s.InsElem(0);
+    s.InsElem(1);
+    s.InsElem(2);
+    TSet comp = ~s;
+    for (int i = 0; i < 3; i++)
+        EXPECT_FALSE(comp.IsMember(i));
 }
