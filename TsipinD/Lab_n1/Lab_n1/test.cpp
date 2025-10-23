@@ -70,6 +70,26 @@ TEST(BitField, EmptyInversion) {
         EXPECT_TRUE(neg.GetBit(i));
 }
 
+TEST(BitField, CopyConstructorIsCorrect) {
+    TBitField original(6);
+    original.SetBit(3);
+    TBitField copy(original);
+    EXPECT_EQ(copy.GetLength(), 6);
+    EXPECT_TRUE(copy.GetBit(3));
+    EXPECT_TRUE(original == copy);
+}
+
+TEST(BitField, AssignmentOperatorIsCorrect) {
+    TBitField a(4);
+    a.SetBit(1);
+    TBitField b(2);
+    b.SetBit(0);
+    b = a;
+    EXPECT_EQ(b.GetLength(), 4);
+    EXPECT_TRUE(b.GetBit(1));
+    EXPECT_TRUE(a == b);
+}
+
 //--------------------------  TSet  --------------------------
 
 TEST(Set, InsDelIsmemTest) {
@@ -110,20 +130,13 @@ TEST(Set, EqualAndInequal) {
 
 TEST(Set, DifferentSizes) {
     TSet a(5), b(8);
-    a.InsElem(1);
-    b.InsElem(6);
-    TSet u = a + b;
-    EXPECT_TRUE(u.IsMember(1));
-    EXPECT_TRUE(u.IsMember(6));
-    EXPECT_EQ(u.GetMaxPower(), 8);
+    EXPECT_THROW(a + b, std::invalid_argument);
+
 }
 
 TEST(Set, IntersectionDifferentSizes) {
     TSet a(5), b(8);
-    a.InsElem(3);
-    b.InsElem(3);
-    TSet inter = a * b;
-    EXPECT_TRUE(inter.IsMember(3));
+    EXPECT_THROW(a * b, std::invalid_argument);
 }
 
 TEST(Set, ConversionToBitField) {
@@ -142,3 +155,32 @@ TEST(Set, SetInversion) {
     for (int i = 0; i < 3; i++)
         EXPECT_FALSE(comp.IsMember(i));
 }
+TEST(Set, CopyConstructorIsCorrect) {
+    TSet original(6);
+    original.InsElem(4);
+    TSet copy(original);
+    EXPECT_EQ(copy.GetMaxPower(), 6);
+    EXPECT_TRUE(copy.IsMember(4));
+    EXPECT_TRUE(original == copy);
+}
+
+TEST(Set, AssignmentOperatorIsCorrect) {
+    TSet a(5);
+    a.InsElem(2);
+    TSet b(3);
+    b = a;
+    EXPECT_EQ(b.GetMaxPower(), 5);
+    EXPECT_TRUE(b.IsMember(2));
+    EXPECT_TRUE(a == b);
+}
+
+TEST(Set, OutOfRangeThrows) {
+    TSet s(4);
+    EXPECT_THROW(s.InsElem(5), std::out_of_range);
+    EXPECT_THROW(s.InsElem(-1), std::out_of_range);
+    EXPECT_THROW(s.DelElem(6), std::out_of_range);
+    EXPECT_THROW(s.DelElem(-2), std::out_of_range);
+    EXPECT_THROW(s.IsMember(10), std::out_of_range);
+    EXPECT_THROW(s.IsMember(-3), std::out_of_range);
+}
+

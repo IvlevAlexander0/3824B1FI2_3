@@ -59,10 +59,14 @@ TSet TSet::operator-(int Elem) {
 }
 
 TSet TSet::operator+(const TSet& s) {
+    if (MaxPower != s.MaxPower)
+        throw std::invalid_argument("Sets must have the same MaxPower for union");
     return TSet(BitField | s.BitField);
 }
 
 TSet TSet::operator*(const TSet& s) {
+    if (MaxPower != s.MaxPower)
+        throw std::invalid_argument("Sets must have the same MaxPower for intersection");
     return TSet(BitField & s.BitField);
 }
 
